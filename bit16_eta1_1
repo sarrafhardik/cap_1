@@ -1,0 +1,54 @@
+module bit16_eta1_1(
+    input wire [15:0]a, [15:0]b,
+    output wire [15:0]sum,
+    output wire cout
+    );
+    
+    //lsb cu
+    wire cs[7:0];
+    assign cs[7] = a[7]&b[7];
+    assign cs[6] = (a[6]&b[6]) | cs[7];
+    assign cs[5] = (a[5]&b[5]) | cs[6];
+    assign cs[4] = (a[4]&b[4]) | cs[5];
+    assign cs[3] = (a[3]&b[3]) | cs[4] | cs[7];
+    assign cs[2] = (a[2]&b[2]) | cs[3];
+    assign cs[1] = (a[1]&b[1]) | cs[2];
+    assign cs[0] = (a[0]&b[0]) | cs[1];
+    
+    //lsb unit
+    assign sum[7] = (a[7]^b[7]) | cs[7];
+    assign sum[6] = (a[6]^b[6]) | cs[6];
+    assign sum[5] = (a[5]^b[5]) | cs[5];
+    assign sum[4] = (a[4]^b[4]) | cs[4];
+    assign sum[3] = (a[3]^b[3]) | cs[3];
+    assign sum[2] = (a[2]^b[2]) | cs[2];
+    assign sum[1] = (a[1]^b[1]) | cs[1];
+    assign sum[0] = (a[0]^b[0]) | cs[0];
+     
+    //msb
+    wire [14:8]ac;
+    assign sum[8] = a[8]^b[8];
+    assign ac[8] = a[8]&b[8];
+    
+    assign sum[9] = a[9]^b[9]^ac[8];
+    assign ac[9] = (a[9]&b[9]) | (b[9]&ac[8]) | (ac[8]&a[9]);
+    
+    assign sum[10] = a[10]^b[10]^ac[9];
+    assign ac[10] = (a[10]&b[10]) | (b[10]&ac[9]) | (ac[9]&a[10]);
+    
+    assign sum[11] = a[11]^b[11]^ac[10];
+    assign ac[11] = (a[11]&b[11]) | (b[11]&ac[10]) | (ac[10]&a[11]);
+    
+    assign sum[12] = a[12]^b[12]^ac[11];
+    assign ac[12] = (a[12]&b[12]) | (b[12]&ac[11]) | (ac[11]&a[12]);
+    
+    assign sum[13] = a[13]^b[13]^ac[12];
+    assign ac[13] = (a[13]&b[13]) | (b[13]&ac[12]) | (ac[12]&a[13]);  
+    
+    assign sum[14] = a[14]^b[14]^ac[13];
+    assign ac[14] = (a[14]&b[14]) | (b[14]&ac[13]) | (ac[13]&a[14]);
+    
+    assign sum[15] = a[15]^b[15]^ac[14];
+    assign cout = (a[15]&b[15]) | (b[15]&ac[14]) | (ac[14]&a[15]);
+    
+endmodule
